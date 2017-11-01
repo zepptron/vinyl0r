@@ -55,3 +55,38 @@ It should look like this:
 ```http://192.168.0.9:8000/raspi.```
 
 It's working. Nice. If not, start again. It IS working!
+
+8. make it smart with systemd
+
+if you don't want to do anything manually, copy the darkice servicefile to `/lib/systemd/system`.
+
+```
+root@raspberrypi:/lib/systemd/system# ls -lah | grep dark
+-rw-r--r--  1 root root  193 Oct 31 23:02 darkice_kill_me.service
+```
+
+afterwards, let systemd take care of restarts.
+
+```
+systemctl enable darkice_kill_me.service
+```
+
+This will place a symlink for darkice to /etc/systemd/system/multi-user.target.wants/ to make it persistent. Otherwise it's gone after the next reboot.
+
+```
+root@raspberrypi:/etc/systemd/system/multi-user.target.wants# ls -lah
+...
+lrwxrwxrwx  1 root root   43 Oct 31 23:03 darkice_kill_me.service -> /lib/systemd/system/darkice_kill_me.service
+...
+```
+
+now you can checkout everything with systemd tools:
+
+```
+systemctl status darkice_kill_me.service
+...
+systemctl status icecast2.service
+...
+```
+
+wow. 
